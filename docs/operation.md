@@ -104,4 +104,4 @@ This means that to check for a successful completion, the Failure Criteria shoul
 
 ## Logging and Job Output
 The default logging implemented by the connector consists of a maximum cycle of five log files. 
-The log files contain information about the Cegid ORLI Connector and any jobs run by the Cegid ORLI Connector. The log files (cegidorli.log - cegidorli.log.5) are located in the <installation root>\log directory. Information is appended into the log files and any error messages, return codes can be viewed in these log files.
+The log files contain information about the Cegid ORLI Connector and any jobs run by the Cegid ORLI Connector. The log files (cegidorli.log - cegidorli.log.5) are located in the installation root\\log directory. Information is appended into the log files and any error messages, return codes can be viewed in these log files.
