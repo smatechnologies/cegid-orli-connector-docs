@@ -18,7 +18,8 @@ Field | Description
 --------- | -----------
 **User Id**          | Required field, defining the Windows batch user that the connector will be executed under.
 **Connector Path**   | Required field that contains the installed location of the Cegid Orli Connector. This consists of a global property value which contains the root installation directory. Default value is **OrliPath**. If more than one Orli Connectors is installed on the same system, then an additional global property should be defined and the entry in this field updated. 
-**User Name**        | Required field that contains the name of a Cegid user that has the required privileges to execute the job.
+**User Name v21.0.0**| Required field that contains the name of a Cegid user that has the required privileges to execute the job.
+**User Name v22.0.0**| Value is maintained for compatibility reasons, but no longer used by the connector. Instead the user value in the configuration file used.
 **Language Profile** | Optional field that contains the language to be used when generating information. This allows a different language to be used instead of the default language associated with the user profile. The value must be a defined value in the application.
 **User Name**        | Required field that contains the  Cegid operation to execute. Select requestFiles, requestLog, requestStatus, requestTechnicalData or executeRequest from the drop down list. Depending which function is selected, additional information can be entered in the appropriate TAB definition.
 
@@ -74,7 +75,8 @@ The **Execute Request** TAB contains the following fields.
 
 Field | Description
 --------- | -----------
-**User Name**              | Required field that contains the name of a user that has the appropriate privileges to execute the job in the Cegid Application.
+**User Name v21.0.0**      | Required field that contains the name of a user that has the appropriate privileges to execute the job in the Cegid Application.
+**User Name v22.0.0**      | Value is maintained for compatibility reasons, but no longer used by the connector. Instead the user value in the configuration file used.
 **Func Name**              | Required field that contains the job to execute.
 **Filter Name**            | Optional field that contains a filter defined by the user defining the output parameters associated with this request. If not present, the default value in the user profile defined for the User in the User Name field will be used.
 **Extract Technical Data** | Optional field that when selected will retrieve the technical data of the job and add it to the job log.
@@ -102,4 +104,4 @@ This means that to check for a successful completion, the Failure Criteria shoul
 
 ## Logging and Job Output
 The default logging implemented by the connector consists of a maximum cycle of five log files. 
-The log files contain information about the Cegid ORLI Connector and any jobs run by the Cegid ORLI Connector. The log files (cegidorli.log - cegidorli.log.5) are located in the ```<installation root>\log``` directory. Information is appended into the log files and any error messages, return codes can be viewed in these log files.
+The log files contain information about the Cegid ORLI Connector and any jobs run by the Cegid ORLI Connector. The log files (cegidorli.log - cegidorli.log.5) are located in the installation root\\log directory. Information is appended into the log files and any error messages, return codes can be viewed in these log files.
