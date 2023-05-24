@@ -6,7 +6,9 @@ It should be noted that the Cegid ORLI Connector requires a Windows Agent as it 
 
 ## Supported Software Levels
 The following software levels are required to implement the Cegid ORLI Connector.
-- Cegid ORLI version V13, V14 & V15.
+- Cegid ORLI
+    - Connector 21.0.0 version V13, V14 & V15.
+    - Connector 22.0.0 version v22.
 - OpCon Release 19.x or higher.
 - Uses embedded Java 11.
 

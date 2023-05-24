@@ -1,4 +1,22 @@
-# Release Notes Cegid OrLi 21.0
+# Release Notes Cegid Orii 22.0.0
+
+## General
+
+The release supports Cegid Orli version 22.0 (includes support for wsdl v2).
+
+## Migration Considerations
+
+This release no longer requires that a user is specified when calling the application. Instead the user / password values 
+used for authentication are now used to execute the task. 
+
+### New Features
+
+### Fixes
+
+**CONNUTIL-603**    
+                    Update connector to support wsdl v2.
+
+# Release Notes Cegid Orii 21.0.0
 
 ## General
 
