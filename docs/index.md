@@ -5,6 +5,8 @@ sidebar_label: 'Cegid Orli Connector'
 
 # Cegid Orli Connector
 
+**Latest Version is 22.1**
+
 ORLI Commercial Management was entirely conceived to be a set of tools to aid decision-making for all business management areas.
 
 Note that that Connector version 22.0.0 supports Cegid Orli wsdl v2 and 21.0.0 supports Cegid Orli wsdl v1. 
