@@ -1,3 +1,18 @@
+# Release Notes Cegid Orii 22.1.0
+
+## General
+
+The release supports Cegid Orli version 22.1.
+
+## Migration Considerations
+
+### New Features
+
+### Fixes
+
+**CONNUTIL-607**    
+                    Fixed a problem in that Debug logging is not turned off even if config file is set to false.
+
 # Release Notes Cegid Orii 22.0.0
 
 ## General
