@@ -1,8 +1,8 @@
-# Release Notes Cegid Orii 22.1.0
+# Release Notes Cegid ORLI 22.1.0
 
 ## General
 
-The release supports Cegid Orli version 22.1.
+The release supports Cegid ORLI version 22.1.
 
 ## Migration Considerations
 
@@ -11,13 +11,14 @@ The release supports Cegid Orli version 22.1.
 ### Fixes
 
 **CONNUTIL-607**    
-                    Fixed a problem in that Debug logging is not turned off even if config file is set to false.
 
-# Release Notes Cegid Orii 22.0.0
+Fixed a problem in that Debug logging is not turned off even if config file is set to false.
+
+# Release Notes Cegid ORLI 22.0.0
 
 ## General
 
-The release supports Cegid Orli version 22.0 (includes support for wsdl v2).
+The release supports Cegid ORLI version 22.0 (includes support for wsdl v2).
 
 ## Migration Considerations
 
@@ -29,7 +30,8 @@ used for authentication are now used to execute the task.
 ### Fixes
 
 **CONNUTIL-603**    
-                    Update connector to support wsdl v2.
+
+Update connector to support wsdl v2.
 
 # Release Notes Cegid Orii 21.0.0
 
@@ -51,7 +53,10 @@ The connector implements new encryption capabilities and the documentation expla
 ### Fixes
 
 **CONNUTIL-534**    
-                    Cegid Orli log file does not switch on defined values.
+                    
+Cegid ORLI log file does not switch on defined values.
+
 **CONNUTIL-542**    
-                    CVE-2021-44228 adjustment removing log4j as the logging component.
+
+CVE-2021-44228 adjustment removing log4j as the logging component.
 			
