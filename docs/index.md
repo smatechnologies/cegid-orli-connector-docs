@@ -1,15 +1,15 @@
 ---
 slug: '/'
-sidebar_label: 'Cegid Orli Connector'
+sidebar_label: 'Cegid ORLI Connector'
 ---
 
-# Cegid Orli Connector
+# Cegid ORLI Connector
 
 **Latest Version is 22.1**
 
 ORLI Commercial Management was entirely conceived to be a set of tools to aid decision-making for all business management areas.
 
-Note that that Connector version 22.0.0 supports Cegid Orli wsdl v2 and 21.0.0 supports Cegid Orli wsdl v1. 
+Note that that Connector version 22.0.0 supports Cegid ORLI wsdl v2 and 21.0.0 supports Cegid ORLI wsdl v1. 
 
 The connector implementation consists of a Windows batch program that is executed by the Windows Agent. The job definitions are entered as Windows jobs using the Cegid ORLI job subtype. 
 When the job is scheduled by OpCon, the definitions are passed as arguments to the Cegid ORLI Connector. 
