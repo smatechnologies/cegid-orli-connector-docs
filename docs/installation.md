@@ -7,9 +7,8 @@ It should be noted that the Cegid ORLI Connector requires a Windows Agent as it 
 ## Supported Software Levels
 The following software levels are required to implement the Cegid ORLI Connector.
 - Cegid ORLI
-    - Connector 21.0.0 version V13, V14 & V15.
-    - Connector 22.0.0 version v22.
-- OpCon Release 19.x or higher.
+    - Connector 25.0 version v22.
+- OpCon Release 23.x or higher.
 - Uses embedded Java 11.
 
 ## Installation
@@ -24,7 +23,8 @@ The Cegid ORLI Connector can be installed on the OpCon server or on a separate W
 
 Copy the supplied install file CegidOrliConnector-win.zip file to the required windows system in a temp directory (c:\temp) and extract the files into the required location.
 
-After the installation is complete, the installation root directory contains the connector executable, the encryption software module, the Connector.config file, a java directory containing the required Java environment, a wsdl directory containing the BatchManage.wsdl file and an emplugins directory containing the Job Sub type.
+After the installation is complete, the installation root directory contains the connector executable, the encryption software module, the Connector.config file, a java directory containing the required Java environment and an emplugins directory containing the Job Sub type.
+
 Installation complete.
 
 ### Job Subtype Installation
@@ -59,12 +59,14 @@ Property Name | Value
 --------- | -----------
 **[CONNECTOR]**                | header
 **CONNECTOR_NAME**             | The name of the connector. This value should not change
+**POLL_DELAY**                 | The time to wait before submitting the first status request when tracking the status of a started task (default 5 seconds).
+**POLL_INTERVAL**              | The time to wait fos subsequent status requests (default 3 seconds).
 **DEBUG**                      | The Connector supports a debug mode which can be enabled by setting the value to ON. The connector should be run with DEBUG disabled (OFF) and enabled (ON) when requested to capture an error condition. Value either ON or OFF (default OFF).
 **[ORLI]**                     | header
-**ORLI_SERVER_ADDRESS**        | This defines the address of the web server that supports the Orli web services. The value here is used to overwrite the web server address in the supplied wsdl.
+**ORLI_TOKEN_URL**             | This defines the address where authentication requests are submitted.
+**ORLI_TOKEN_CLIENT_ID**       | This client id used to retrieve the authentication token
 **ORLI_WEB_SERVICES_ENDPOINT** | This defines the web services end point to be used when calling the web service.
-**ORLI_ORLI_WSDL_LOCATION**    | This defines the location of the BatchManage.wsdl file relative to the installation directory. This value should not be changed.
-**ORLI_USER**                  | The web server requires authentication and this is the name of a user that has the required privileges to access the web services.
+**ORLI_USER**                  | The name of a user that will be included in the authentication request.
 **ORLI_USER_PASSWORD**         | The password of the defined user . The value must be encrypted using the Encrypt.exe tool.
 
  
@@ -72,13 +74,15 @@ Example configuration file.
 ```
 [CONNECTOR]
 CONNECTOR_NAME=Cegid Orli
+POLL_DELAY=5
+POLL_INTERVAL=3
 DEBUG=OFF
 
 [ORLI]
-ORLI_SERVER_ADDRESS=http://srv-roa-dvpux.cegidgroup.local:8001
-ORLI_WEB_SERVICES_ENDPOINT=/orliweb/webservices/TRUNK/soap/BatchManage
-ORLI_WSDL_LOCATION=wsdl/BatchManage.wsdl
-ORLI_USER=orli
-ORLI_USER_PASSWORD=6233426a6232353463484d3d
+ORLI_TOKEN_URL=test.fr/orli-auth/realms/Cegid-Orli/protocol/openid-connect/token
+ORLI_TOKEN_CLIENT_ID=orli-TEST-CLIENT
+ORLI_WEB_SERVICES_ENDPOINT=test.fr/orli-ws/ORTS2/soap/v1/BatchManage
+ORLI_USER=usera
+ORLI_USER_PASSWORD=**********************
 
 ```

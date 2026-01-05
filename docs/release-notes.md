@@ -1,4 +1,23 @@
-# Release Notes Cegid ORLI 22.1.0
+# Release Notes Cegid Orii 25.0
+
+## General
+
+The release supports Cegid Orli version 25.1.
+
+This is a complete rewrite of the Cegid Orli connector removing the SOAP web services requests replacing them with 
+Rest-API calls using SOAP data structures. 
+
+Authentication is performed by retrieving an authorization token and then setting the value in the header of the Rest-API call.
+
+The information is passed using a POST method and using XML soapenv Envelopes.
+
+Returned XML data is parsed using the XPATH library.
+
+## Migration Considerations
+
+The configuration has changed and requires the new URL's as well as the authentication information required to retrieve a token for subsequent use.
+
+# Release Notes Cegid Orii 22.1.0
 
 ## General
 
