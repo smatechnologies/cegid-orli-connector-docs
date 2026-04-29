@@ -1,25 +1,51 @@
 ---
 slug: '/'
 sidebar_label: 'Cegid ORLI Connector'
+hide_table_of_contents: true
+displayed_sidebar: null
 ---
 
 # Cegid ORLI Connector
 
-**Latest Version is 25.0**
+The Cegid ORLI Connector integrates OpCon with the Cegid ORLI commercial management application, enabling automated job execution and monitoring from within OpCon.
 
-ORLI Commercial Management was entirely conceived to be a set of tools to aid decision-making for all business management areas.
+<div style={{display: 'flex', gap: '0.75rem', alignItems: 'flex-start', flexWrap: 'wrap', marginTop: '1rem'}}>
 
-The connector implementation consists of a Windows batch program that is executed by the Windows Agent. The job definitions are entered as Windows jobs using the Cegid ORLI job subtype. 
-When the job is scheduled by OpCon, the definitions are passed as arguments to the Cegid ORLI Connector. 
+<div style={{flex: '1', minWidth: '160px', display: 'flex', flexDirection: 'column', gap: '0.6rem'}}>
 
-The Cegid ORLI Connector supports the following job types requestFiles, requestLog, requestStatus, requestTechnicalData and executeRequest which can used be used to communicate with the Cegid application environment.
+<div style={{background: 'var(--ifm-card-background-color)', border: '1px solid var(--ifm-color-emphasis-400)', borderRadius: '10px', padding: '0.75rem 1rem'}}>
 
-- requestFiles job type can be used to retrieve the list of files available after the execution of the request (executionRequest).
-- requestLog job type can be used to retrieve the log information after the execution of the request (executionRequest).
-- requestStatus job type can be used to determine the status of an execution request (executionRequest).
-- requestTechnicalData job type can be used to retrieve technical data about an execution request (executionRequest). This is usually only used to obtain additional information when an error occurs.
-- executeRequest job type can be used to start a job within the Cegid ORLI application. After submitting an executionRequest, the status of the execution is monitored until completion (either successful or failure) and the appropriate job information and logs are extracted and added to the OpCon job output. 
+### Overview
 
-The job definitions are passed to the Cegid ORLI Connector as arguments. The connector builds the required soapenv Envelopes and POSTs the request using Rest-APIs. 
-Returned XML data is parsed using the XPATH library.  
+- [Overview](./overview.md)
+- [Release notes](./release-notes.md)
 
+</div>
+
+</div>
+
+<div style={{flex: '1', minWidth: '160px', display: 'flex', flexDirection: 'column', gap: '0.6rem'}}>
+
+<div style={{background: 'var(--ifm-card-background-color)', border: '1px solid var(--ifm-color-emphasis-400)', borderRadius: '10px', padding: '0.75rem 1rem'}}>
+
+### Installation
+
+- [Installation](./installation.md)
+
+</div>
+
+</div>
+
+<div style={{flex: '1', minWidth: '160px', display: 'flex', flexDirection: 'column', gap: '0.6rem'}}>
+
+<div style={{background: 'var(--ifm-card-background-color)', border: '1px solid var(--ifm-color-emphasis-400)', borderRadius: '10px', padding: '0.75rem 1rem'}}>
+
+### Operation
+
+- [Operation](./operation.md)
+
+</div>
+
+</div>
+
+</div>

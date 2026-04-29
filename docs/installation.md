@@ -1,76 +1,107 @@
+---
+title: Installation
+sidebar_label: Installation
+description: "Install and configure the Cegid ORLI Connector on a Windows server so OpCon can submit and monitor jobs in the Cegid ORLI application."
+tags:
+  - Procedural
+  - System Administrator
+  - Installation
+---
+
 # Installation
 
-The connector installation consists of multiple steps that are required to complete the installation successfully. This consists of installing a Windows Agent (if required), the Cegid ORLI Connector, configuring the connector and installing the Cegid Windows job subtype. 
+The Cegid ORLI Connector installation consists of three steps: installing the connector files, adding the Cegid ORLI job subtype to Enterprise Manager, and configuring the connector.
 
-It should be noted that the Cegid ORLI Connector requires a Windows Agent as it executes as a Windows batch job. It can be installed either on the central server or an agent can be installed on another Windows server.
+## What is it?
 
-## Supported Software Levels
-The following software levels are required to implement the Cegid ORLI Connector.
-- Cegid ORLI
-    - Connector 25.0 version v22.
-- OpCon Release 23.x or higher.
-- Uses embedded Java 11.
+The Cegid ORLI Connector is a Windows batch program that runs on a Windows Agent machine. It communicates with the Cegid ORLI application using REST APIs and returns job status and output to OpCon.
 
-## Installation
-The installation process consists of the following steps:
+- Install this connector when you need OpCon to automate jobs in the Cegid ORLI commercial management application
+- The connector can be installed on the OpCon server or on a separate Windows machine that has the Windows Agent installed
 
-- Cegid ORLI Connector Installation.
-- Adding Cegid ORLI Connector job subtype to Enterprise Manager.
-- Cegid ORLI Connector Configuration.
+## Supported software versions
 
-### Connector Installation
-The Cegid ORLI Connector can be installed on the OpCon server or on a separate Windows server. When installing on a separate Windows server, it requires that an OpCon Windows Agent be installed on the server.
+The following software versions are required to run the Cegid ORLI Connector:
 
-Copy the supplied install file CegidOrliConnector-win.zip file to the required windows system in a temp directory (c:\temp) and extract the files into the required location.
+| Component | Required version |
+|---|---|
+| Cegid ORLI | 22.x or higher (Connector 25.0 requires v22) |
+| OpCon | 23.x or higher |
+| Java | Embedded Java 11 (included — no separate installation required) |
 
-After the installation is complete, the installation root directory contains the connector executable, the encryption software module, the Connector.config file, a java directory containing the required Java environment and an emplugins directory containing the Job Sub type.
+## Install the connector
 
-Installation complete.
+To install the connector, complete the following steps:
 
-### Job Subtype Installation
-Copy the Enterprise Manager plug-in from the installation /emplugins directory to the dropins directory of the Enterprise Manager installation. 
-If the dropins directory does not exist, create the dropins directory off the root directory. 
+1. Copy the `CegidOrliConnector-win.zip` file to the target Windows machine in a temporary directory (for example, `c:\temp`).
+2. Extract the zip file to the desired installation directory.
 
-Restart Enterprise Manager and a new Windows job subtype called Cegid ORLI will be visible.
+After extraction, the installation directory contains the following:
 
-If not restart Enterprise Manager using 'Run as Administrator'. After this Enterprise Manager can be used normally.
+| Item | Description |
+|---|---|
+| Connector executable | The main connector program |
+| `Encrypt.exe` | Utility for encrypting password values |
+| `Connector.config` | Configuration file |
+| `java/` | Embedded Java 11 runtime |
+| `emplugins/` | Enterprise Manager job subtype plugin |
 
-Create a global property **OrliPath** that contains the full path of the installation directory.
+## Install the job subtype
 
-### Connector Configuration
-The configuration of the Cegid ORLI Connector requires setting the required values in the Connector.config file. 
-The Connector.config file contains information for the Cegid ORLI Connector that defines the address of the web services, the web services end point, the location of the BatchManage.wsdl file and the user code and password to use for accessing the web services. All password values placed in the configuration file must be encrypted using the Encrypt.exe utility provided with the connector
+To add the Cegid ORLI job subtype to Enterprise Manager, complete the following steps:
 
-#### Encrypt Utility
-The Encrypt utility uses standard 64 bit encryption.
+1. Copy the Enterprise Manager plugin file from the connector's `emplugins/` directory to the `dropins/` directory of your Enterprise Manager installation.
+2. If the `dropins/` directory does not exist, create it in the Enterprise Manager root directory.
+3. Restart Enterprise Manager. The **Cegid ORLI** job subtype appears in the Windows job subtype list.
 
-Supports a -v argument and displays the encrypted value
+**NOTE:** If the job subtype does not appear after restarting, close Enterprise Manager and reopen it using **Run as Administrator**. After this step, Enterprise Manager can be used normally.
 
-On Windows, example on how to encrypt the value "abcdefg":
+## Create the global property
+
+To configure the connector path, complete the following steps:
+
+1. In OpCon, create a global property named `OrliPath`.
+2. Set the value to the full path of the connector installation directory.
+
+**NOTE:** If more than one Cegid ORLI Connector is installed on the same machine, create an additional global property with a unique name and update the **Connector Path** field in each job definition accordingly.
+
+## Configure the connector
+
+The connector reads its settings from the `Connector.config` file in the installation directory. All password values must be encrypted using `Encrypt.exe` before being placed in the file.
+
+### Encrypt a password value
+
+To encrypt a password value, complete the following steps:
+
+1. Open a command prompt in the connector installation directory.
+2. Run the following command, replacing `yourpassword` with the value to encrypt:
+
 ```
-Encrypt.exe -v abcdefg
+Encrypt.exe -v yourpassword
 ```
 
-#### Configuration
-Configure the Connector.config file in the installation directory setting the required information.
-The Connector.config contains the following values
+3. Copy the encrypted output and paste it into the appropriate field in `Connector.config`.
 
-Property Name | Value
---------- | -----------
-**[CONNECTOR]**                | header
-**CONNECTOR_NAME**             | The name of the connector. This value should not change
-**POLL_DELAY**                 | The time to wait before submitting the first status request when tracking the status of a started task (default 5 seconds).
-**POLL_INTERVAL**              | The time to wait fos subsequent status requests (default 3 seconds).
-**DEBUG**                      | The Connector supports a debug mode which can be enabled by setting the value to ON. The connector should be run with DEBUG disabled (OFF) and enabled (ON) when requested to capture an error condition. Value either ON or OFF (default OFF).
-**[ORLI]**                     | header
-**ORLI_TOKEN_URL**             | This defines the address where authentication requests are submitted.
-**ORLI_TOKEN_CLIENT_ID**       | This client id used to retrieve the authentication token
-**ORLI_WEB_SERVICES_ENDPOINT** | This defines the web services end point to be used when calling the web service.
-**ORLI_USER**                  | The name of a user that will be included in the authentication request.
-**ORLI_USER_PASSWORD**         | The password of the defined user . The value must be encrypted using the Encrypt.exe tool.
+### Configuration settings
 
- 
-Example configuration file. 
+The `Connector.config` file contains the following settings:
+
+| Setting | Description | Default |
+|---|---|---|
+| **[CONNECTOR]** | | |
+| `CONNECTOR_NAME` | The display name of the connector | `Cegid Orli` |
+| `POLL_DELAY` | Seconds to wait before submitting the first status request after starting a job | `5` |
+| `POLL_INTERVAL` | Seconds to wait between subsequent status requests | `3` |
+| `DEBUG` | Enables detailed logging when set to `ON`. Set to `OFF` during normal operation | `OFF` |
+| **[ORLI]** | | |
+| `ORLI_TOKEN_URL` | The URL where authentication token requests are submitted | — |
+| `ORLI_TOKEN_CLIENT_ID` | The client ID used to retrieve the authentication token | — |
+| `ORLI_WEB_SERVICES_ENDPOINT` | The Cegid ORLI REST API endpoint for job requests | — |
+| `ORLI_USER` | The username included in the authentication request | — |
+| `ORLI_USER_PASSWORD` | The password for the defined user. Must be encrypted using `Encrypt.exe` | — |
+
+### Example configuration file
+
 ```
 [CONNECTOR]
 CONNECTOR_NAME=Cegid Orli
@@ -84,5 +115,43 @@ ORLI_TOKEN_CLIENT_ID=orli-TEST-CLIENT
 ORLI_WEB_SERVICES_ENDPOINT=test.fr/orli-ws/ORTS2/soap/v1/BatchManage
 ORLI_USER=usera
 ORLI_USER_PASSWORD=**********************
-
 ```
+
+## FAQs
+
+**Can I install the connector on a machine other than the OpCon server?**
+
+Yes. The connector can be installed on any Windows machine that has the Windows Agent installed and configured in OpCon. The connector runs as a Windows batch job under the Windows Agent.
+
+**What happens if the `dropins/` directory does not exist in Enterprise Manager?**
+
+Create the directory manually in the Enterprise Manager root directory, then copy the plugin file into it and restart Enterprise Manager.
+
+**Do I need to install Java separately?**
+
+No. The connector includes an embedded Java 11 runtime in the `java/` subdirectory. No separately installed Java version is required.
+
+**Why must passwords be encrypted?**
+
+The `Connector.config` file is stored as plain text. Encrypting password values prevents credentials from being exposed in the file. Use the included `Encrypt.exe` utility to produce the encrypted value.
+
+**What does `POLL_DELAY` and `POLL_INTERVAL` control?**
+
+After submitting an executeRequest job, the connector polls the Cegid ORLI application to check when the job completes. `POLL_DELAY` sets how long to wait before the first status check, and `POLL_INTERVAL` sets how long to wait between each subsequent check.
+
+## Glossary
+
+**Connector** — The Cegid ORLI Connector executable that OpCon calls as a Windows batch job to communicate with the Cegid ORLI application.
+
+**Connector.config** — The configuration file in the connector installation directory that defines connection settings, authentication credentials, and runtime behavior.
+
+**Encrypt.exe** — A utility included with the connector that encrypts password values using 64-bit encryption for use in `Connector.config`.
+
+**emplugins** — The directory containing the Enterprise Manager job subtype plugin. Copy its contents to the Enterprise Manager `dropins/` directory to enable the Cegid ORLI job subtype.
+
+**OrliPath** — The OpCon global property that stores the full path to the connector installation directory. The job subtype uses this property to locate the connector executable at run time.
+
+**Related topics:**
+
+- [Overview](./overview.md)
+- [Operation](./operation.md)
