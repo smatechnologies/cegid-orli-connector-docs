@@ -1,7 +1,7 @@
 ---
 title: Operation
 sidebar_label: Operation
-description: "Configure and use Cegid ORLI job definitions in Enterprise Manager, including field descriptions, job types, failure criteria, and logging."
+description: "Configure and use Cegid ORLI job definitions in Enterprise Manager, including field descriptions, operations, failure criteria, and logging."
 tags:
   - Reference
   - Automation Engineer
@@ -35,7 +35,7 @@ To define a Cegid ORLI job in Enterprise Manager, complete the following steps:
 
 ## General information fields
 
-All Cegid ORLI job types require the following general fields:
+All Cegid ORLI jobs require the following general fields:
 
 | Field | Required | Description |
 |---|---|---|
@@ -56,6 +56,12 @@ Use this operation to start a job in the Cegid ORLI application.
 | **Func Name** | Yes | The name of the job to run in the Cegid ORLI application |
 | **Filter Name** | No | A filter that defines output parameters for this request. If not specified, the default filter from the user profile is used |
 | **Extract Technical Data** | No | When selected, retrieves technical data from the job and adds it to the OpCon job output |
+
+:::caution
+
+If the technical data cannot be retrieved, the job is reported as failed even when the job itself finished successfully. The log and the file list retrieved on the same completion path do not behave this way — an error retrieving either is recorded in the job log and leaves the job result unchanged. Select **Extract Technical Data** where its diagnostic value outweighs that risk.
+
+:::
 
 ### requestFiles
 
@@ -85,7 +91,13 @@ Use this operation to retrieve the current status of a previously submitted exec
 |---|---|---|
 | **Request Number** | Yes | The request number of the previously completed executeRequest job |
 
-This operation performs a single status check. Set the **Failure Criteria** to the expected successful completion code.
+The status is written to the OpCon job output.
+
+:::caution
+
+This operation reports whether the status request succeeded, not what the status was. It finishes OK whenever the Cegid ORLI application responds — including when the response carries an error — so its completion code cannot be used to branch on the monitored job's outcome. Use the completion code of the `executeRequest` job itself for that.
+
+:::
 
 ### requestTechnicalData
 
@@ -99,23 +111,58 @@ The retrieved technical data can be viewed using the OpCon job output retrieval 
 
 ## Failure criteria
 
-All Cegid ORLI job types require a failure criteria definition. The connector maps Cegid ORLI `FINISHED_PROCESSING` return codes to OpCon job statuses as follows:
+Every Cegid ORLI job requires a failure criteria definition. Which codes a job can return depends on the operation it runs.
+
+### executeRequest codes
+
+`executeRequest` submits a job and polls it until the Cegid ORLI application reports that processing has finished, so it reports the outcome of the job itself. The connector waits for the `FINISHED_PROCESS` value to reach `X`, then reads `PROCESS_STATUS` and `LOG_STATUS` to determine the code it returns:
 
 | Code | OpCon status | Description |
 |---|---|---|
-| `0` | JOB_FINISHED_OK | The job completed processing with PROCESS_STATUS 9 and LOG_STATUS 0.0, or with PROCESS_STATUS 9 and no LOG_STATUS present |
-| `1` | JOB_FINISHED_WITH_WARNING | The job completed processing with PROCESS_STATUS 9 and LOG_STATUS 1.0 |
-| `2` | JOB_FAILED | The job failed during processing with PROCESS_STATUS 9 and LOG_STATUS 2.0 |
-| `6` | JOB_FAILED | The job failed (Cegid code 6 returned) |
-| `7` | JOB_DELETED | The job was deleted (Cegid code 7 returned) |
-| `8` | JOB_STOPPED | The job stopped (Cegid code 8 returned) |
-| `99` | Connection failure | The connector could not connect to the Cegid ORLI application |
+| `0` | JOB_FINISHED_OK | The job finished with a process status of `9` and a log status of `0`, with no log status present, or with a log status the connector does not recognize |
+| `1` | JOB_FINISHED_WITH_WARNING | The job finished with a process status of `9` and a log status of `1` |
+| `2` | JOB_FAILED | The job finished with a process status of `9` and a log status of `2`, or the connector could not reach the application, could not authenticate, or received an error in response |
+| `6` | JOB_FAILED | The job returned a process status of `6` |
+| `7` | JOB_DELETED | The job returned a process status of `7` |
+| `8` | JOB_STOPPED | The job returned a process status of `8` |
 
-To configure success criteria: set the **Failure Criteria** to **Equal To 0** (finished successfully) or **Equal To 1** (finished with warning treated as success).
+:::caution
+
+A log status the connector does not recognize is reported as `0`, finished OK. An unmapped status from the Cegid ORLI application is therefore indistinguishable from a successful one in the OpCon result. Where the outcome matters, confirm it in the job log rather than relying on the completion code alone.
+
+:::
+
+### Codes for the retrieval operations
+
+`requestFiles`, `requestLog`, `requestStatus`, and `requestTechnicalData` report whether the request succeeded, not the state of the job they asked about. They return two codes:
+
+| Code | OpCon status | Description |
+|---|---|---|
+| `0` | JOB_FINISHED_OK | The request succeeded |
+| `2` | JOB_FAILED | The connector could not reach the application, could not authenticate, or received an error in response |
+
+### Configuration errors
+
+The connector reports the following codes before it attempts any request. Both mean that `Connector.config` is incomplete, and neither indicates a problem with the network or with the Cegid ORLI application:
+
+| Code | Description |
+|---|---|
+| `99` | The `ORLI_USER_PASSWORD` setting is missing from `Connector.config` |
+| `401` | The `ORLI_USER_PASSWORD` setting is present but empty |
+
+To configure success criteria, set the **Failure Criteria** to **Equal To 0** for any operation, or to **Equal To 1** for an `executeRequest` job where a warning should be treated as success.
 
 ## Logging and job output
 
-The connector writes log information to rotating log files in the `log/` subdirectory of the installation directory. The log cycle retains a maximum of five files named `cegidorli.log` through `cegidorli.log.5`. New log entries are appended to the current log file. Error messages, return codes, and job information are all written to these log files.
+The connector writes its log files into the `log/` subdirectory of the installation directory, inside a subdirectory named for the current month. Each file is named for the connector and the date, with an index — for example `log\2026-09\cegidorli_2026-09-16.0.log`. A new file starts each day, and the index increments when a file reaches 100 MB. There is no separate current log file to look for: the dated file is the one being written.
+
+Log files contain processing messages, return codes, and error details for each connector run.
+
+:::caution
+
+Log files are retained indefinitely unless you configure pruning. Include the `log` directory in whatever disk monitoring you apply to the connector host.
+
+:::
 
 ## FAQs
 
@@ -125,11 +172,15 @@ The request number is assigned by the Cegid ORLI application when an executeRequ
 
 **Do I need to set a Failure Criteria for every job type?**
 
-Yes. All five job types require a Failure Criteria definition. For most jobs, set **Failure Criteria** to **Equal To 0** to mark the job as complete when it finishes successfully.
+Yes. Every Cegid ORLI job requires a Failure Criteria definition. For most jobs, set **Failure Criteria** to **Equal To 0** to mark the job as complete when it finishes successfully.
 
 **What does code 99 mean?**
 
-Code 99 indicates that the connector could not connect to the Cegid ORLI application. Check the `ORLI_TOKEN_URL` and `ORLI_WEB_SERVICES_ENDPOINT` values in `Connector.config` and verify network connectivity to the Cegid ORLI server.
+Code `99` means the `ORLI_USER_PASSWORD` setting is missing from `Connector.config`. The connector reports it before attempting any request, so it does not indicate a network or application problem. Code `401` means the setting is present but empty. Add or correct the encoded password value.
+
+**What does code 2 mean?**
+
+Code `2` covers every failure the connector reports against the Cegid ORLI application: it could not reach the endpoint, it could not authenticate, or the application returned an error. Check the job log for the message the connector recorded, then verify the `ORLI_TOKEN_URL` and `ORLI_WEB_SERVICES_ENDPOINT` values in `Connector.config` and network connectivity to the Cegid ORLI server.
 
 **What is the difference between requestLog and requestTechnicalData?**
 
@@ -159,7 +210,7 @@ The Language Profile field specifies the language the Cegid ORLI application use
 
 **Filter Name** — An optional parameter that defines which output parameters are returned for a request. Defined within the Cegid ORLI application.
 
-**FINISHED_PROCESSING** — The Cegid ORLI return code that the connector evaluates to determine job completion status. Mapped to OpCon job statuses by the connector.
+**FINISHED_PROCESS** — The Cegid ORLI value that tells the connector processing has finished. The connector polls an `executeRequest` job until it reaches `X`, then reads `PROCESS_STATUS` and `LOG_STATUS` to determine the completion code it returns to OpCon.
 
 **Request Number** — The identifier assigned by Cegid ORLI when an executeRequest job is submitted. Required by the requestFiles, requestLog, requestStatus, and requestTechnicalData operations.
 

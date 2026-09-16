@@ -14,7 +14,7 @@ The Cegid ORLI Connector installation consists of three steps: installing the co
 
 ## What is it?
 
-The Cegid ORLI Connector is a Windows batch program that runs on a Windows Agent machine. It communicates with the Cegid ORLI application using REST APIs and returns job status and output to OpCon.
+The Cegid ORLI Connector is a Java program that runs on a Windows Agent machine, using a Java runtime supplied by the installer. It communicates with the Cegid ORLI application using REST APIs and returns job status and output to OpCon.
 
 - Install this connector when you need OpCon to automate jobs in the Cegid ORLI commercial management application
 - The connector can be installed on the OpCon server or on a separate Windows machine that has the Windows Agent installed
@@ -33,15 +33,15 @@ The following software versions are required to run the Cegid ORLI Connector:
 
 To install the connector, complete the following steps:
 
-1. Copy the `CegidOrliConnector-win.zip` file to the target Windows machine in a temporary directory (for example, `c:\temp`).
+1. Copy the `CegidORLIConnector-win.zip` file to the target Windows machine in a temporary directory (for example, `c:\temp`).
 2. Extract the zip file to the desired installation directory.
 
 After extraction, the installation directory contains the following:
 
 | Item | Description |
 |---|---|
-| Connector executable | The main connector program |
-| `Encrypt.exe` | Utility for encrypting password values |
+| `orli.exe` | The connector program |
+| `Encrypt.exe` | Utility for encoding password values |
 | `Connector.config` | Configuration file |
 | `java/` | Embedded Java 11 runtime |
 | `emplugins/` | Enterprise Manager job subtype plugin |
@@ -67,20 +67,26 @@ To configure the connector path, complete the following steps:
 
 ## Configure the connector
 
-The connector reads its settings from the `Connector.config` file in the installation directory. All password values must be encrypted using `Encrypt.exe` before being placed in the file.
+The connector reads its settings from the `Connector.config` file in the installation directory. All password values must be encoded using `Encrypt.exe` before being placed in the file.
 
-### Encrypt a password value
+### Encode a password value
 
-To encrypt a password value, complete the following steps:
+To encode a password value, complete the following steps:
 
 1. Open a command prompt in the connector installation directory.
-2. Run the following command, replacing `yourpassword` with the value to encrypt:
+2. Run the following command, replacing `yourpassword` with the value to encode:
 
 ```
 Encrypt.exe -v yourpassword
 ```
 
-3. Copy the encrypted output and paste it into the appropriate field in `Connector.config`.
+3. Copy the encoded output and paste it into the appropriate field in `Connector.config`.
+
+:::caution
+
+Encoding obscures a credential; it does not protect it. A value produced by `Encrypt.exe` can be reversed by anyone who can read it, so treat `Connector.config` as a file that contains a live credential. Restrict access to it using file system permissions, and replace credential values with placeholders before sharing the file in a ticket, a screenshot or a repository.
+
+:::
 
 ### Configuration settings
 
@@ -89,18 +95,26 @@ The `Connector.config` file contains the following settings:
 | Setting | Description | Default |
 |---|---|---|
 | **[CONNECTOR]** | | |
-| `CONNECTOR_NAME` | The display name of the connector | `Cegid Orli` |
+| `CONNECTOR_NAME` | The name the connector records in its own log output | `Cegid OrliWeb` |
 | `POLL_DELAY` | Seconds to wait before submitting the first status request after starting a job | `5` |
 | `POLL_INTERVAL` | Seconds to wait between subsequent status requests | `3` |
-| `DEBUG` | Enables detailed logging when set to `ON`. Set to `OFF` during normal operation | `OFF` |
+| `DEBUG` | Enables detailed logging when set to `ON`. Set to `OFF` during normal operation. Required — the connector does not start if this setting is absent | `ON` in the file supplied with the connector |
 | **[ORLI]** | | |
-| `ORLI_TOKEN_URL` | The URL where authentication token requests are submitted | — |
+| `ORLI_TOKEN_URL` | The host and path where authentication token requests are submitted. Enter it without `https://` | — |
 | `ORLI_TOKEN_CLIENT_ID` | The client ID used to retrieve the authentication token | — |
-| `ORLI_WEB_SERVICES_ENDPOINT` | The Cegid ORLI REST API endpoint for job requests | — |
+| `ORLI_WEB_SERVICES_ENDPOINT` | The host and path of the Cegid ORLI REST API endpoint for job requests. Enter it without `https://` | — |
 | `ORLI_USER` | The username included in the authentication request | — |
-| `ORLI_USER_PASSWORD` | The password for the defined user. Must be encrypted using `Encrypt.exe` | — |
+| `ORLI_USER_PASSWORD` | The password for the defined user, encoded using `Encrypt.exe`. Required | — |
+
+:::caution
+
+`ORLI_TOKEN_URL` and `ORLI_WEB_SERVICES_ENDPOINT` must be entered without a scheme. The connector prepends `https://` to both values, so a value that already includes it produces an address the connector cannot reach, and a job that fails while authenticating.
+
+:::
 
 ### Example configuration file
+
+The following example shows a configured file rather than the one supplied with the connector: `DEBUG` has been set to `OFF` for normal operation, and both endpoint values are entered without a scheme.
 
 ```
 [CONNECTOR]
@@ -131,9 +145,11 @@ Create the directory manually in the Enterprise Manager root directory, then cop
 
 No. The connector includes an embedded Java 11 runtime in the `java/` subdirectory. No separately installed Java version is required.
 
-**Why must passwords be encrypted?**
+**Why must password values be encoded?**
 
-The `Connector.config` file is stored as plain text. Encrypting password values prevents credentials from being exposed in the file. Use the included `Encrypt.exe` utility to produce the encrypted value.
+The `Connector.config` file is stored as plain text, so a password written into it directly is readable by anyone who can open the file. Use the included `Encrypt.exe` utility to produce an encoded value instead.
+
+Encoding is not encryption and does not protect the credential — it can be reversed by anyone holding the file. Restrict access to `Connector.config` using file system permissions and treat it as a file that contains a live credential.
 
 **What does `POLL_DELAY` and `POLL_INTERVAL` control?**
 
@@ -141,11 +157,11 @@ After submitting an executeRequest job, the connector polls the Cegid ORLI appli
 
 ## Glossary
 
-**Connector** — The Cegid ORLI Connector executable that OpCon calls as a Windows batch job to communicate with the Cegid ORLI application.
+**Connector** — `orli.exe`, the Cegid ORLI Connector program that OpCon calls as a Windows batch job to communicate with the Cegid ORLI application.
 
 **Connector.config** — The configuration file in the connector installation directory that defines connection settings, authentication credentials, and runtime behavior.
 
-**Encrypt.exe** — A utility included with the connector that encrypts password values using 64-bit encryption for use in `Connector.config`.
+**Encrypt.exe** — The credential encoding utility included with the connector. Encodes password values so they are not stored in readable form in `Connector.config`. Encoding obscures a credential; it does not protect it.
 
 **emplugins** — The directory containing the Enterprise Manager job subtype plugin. Copy its contents to the Enterprise Manager `dropins/` directory to enable the Cegid ORLI job subtype.
 

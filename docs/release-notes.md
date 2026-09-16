@@ -14,9 +14,9 @@ tags:
 
 ### 25.0
 
-2025
+2025 December
 
-### What's new
+#### What's new
 
 :eight_spoked_asterisk: **Complete rewrite using REST API with SOAP data structures.** The connector no longer uses SOAP web services. All requests now use REST API calls with SOAP data structures passed via XML SOAP envelopes.
 
@@ -24,15 +24,15 @@ tags:
 
 :eight_spoked_asterisk: **Updated configuration.** The `Connector.config` file now requires token URL and client ID values (`ORLI_TOKEN_URL`, `ORLI_TOKEN_CLIENT_ID`) in addition to the web services endpoint and user credentials.
 
-### Why this matters
+#### Why this matters
 
 The rewrite from SOAP web services to REST API aligns the connector with current Cegid ORLI API standards. Token-based authentication improves security by separating credential management from individual requests. Existing installations require updated configuration values for the new authentication and endpoint fields before upgrading.
 
-### Upgrade notes
+#### Upgrade notes
 
 - Update `Connector.config` with the new `ORLI_TOKEN_URL` and `ORLI_TOKEN_CLIENT_ID` values before running jobs
 - The `ORLI_WEB_SERVICES_ENDPOINT` value must be updated to the REST API endpoint
-- Re-encrypt the `ORLI_USER_PASSWORD` value using the updated `Encrypt.exe` tool if needed
+- Re-encode the `ORLI_USER_PASSWORD` value using the updated `Encrypt.exe` tool if needed
 
 ---
 
@@ -40,11 +40,13 @@ The rewrite from SOAP web services to REST API aligns the connector with current
 
 ### 22.1.0
 
-### What's new
+2023 July
+
+#### What's new
 
 No new features in this release.
 
-### Fixes
+#### Fixes
 
 :white_check_mark: **CONNUTIL-607**: Fixed an issue where debug logging remained active even when the `DEBUG` setting in `Connector.config` was set to `OFF`.
 
@@ -52,19 +54,19 @@ No new features in this release.
 
 ### 22.0.0
 
-### What's new
+#### What's new
 
 :eight_spoked_asterisk: **Support for Cegid ORLI wsdl v2.** The connector now supports the version 2 WSDL for Cegid ORLI web services.
 
-### Why this matters
+#### Why this matters
 
 The connector now works with Cegid ORLI environments running the updated wsdl v2 interface.
 
-### Upgrade notes
+#### Upgrade notes
 
 - This release no longer requires a user to be specified when calling the application. The user and password values in the configuration file are used for authentication and job execution. Remove any user specification from existing job definitions.
 
-### Fixes
+#### Fixes
 
 :white_check_mark: **CONNUTIL-603**: Updated the connector to support wsdl v2.
 
@@ -74,7 +76,9 @@ The connector now works with Cegid ORLI environments running the updated wsdl v2
 
 ### 21.0.0
 
-### What's new
+2022 January
+
+#### What's new
 
 :eight_spoked_asterisk: **Replaced log4j with slf4j and logback.** The connector no longer uses log4j for logging. All logging now uses slf4j with logback.
 
@@ -82,19 +86,19 @@ The connector now works with Cegid ORLI environments running the updated wsdl v2
 
 :eight_spoked_asterisk: **New installer format.** The connector is now distributed as a zip file. Extract the zip to the desired installation directory.
 
-:eight_spoked_asterisk: **New Encrypt.exe utility.** A new encryption utility is included for encrypting password values in `Connector.config`. The configuration file has been renamed from `Agent.config` to `Connector.config`.
+:eight_spoked_asterisk: **New Encrypt.exe utility.** A credential encoding utility is included for encoding password values in `Connector.config`, so they are not stored in readable form. The configuration file has been renamed from `Agent.config` to `Connector.config`.
 
-### Why this matters
+#### Why this matters
 
 Removing log4j addresses CVE-2021-44228 and eliminates the Log4Shell vulnerability. The embedded Java runtime simplifies installation by removing the dependency on a system-installed Java version. The new installer format makes deployment more straightforward.
 
-### Upgrade notes
+#### Upgrade notes
 
 - Rename existing `Agent.config` to `Connector.config` and verify all settings are present
-- Use the new `Encrypt.exe` tool to re-encrypt any password values
+- Use the new `Encrypt.exe` tool to re-encode any password values
 - No separately installed Java runtime is required
 
-### Fixes
+#### Fixes
 
 :white_check_mark: **CONNUTIL-534**: Fixed an issue where the Cegid ORLI log file did not rotate at the configured file size limit.
 
