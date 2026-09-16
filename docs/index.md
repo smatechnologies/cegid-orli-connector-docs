@@ -1,51 +1,30 @@
 ---
 slug: '/'
+title: Cegid ORLI Connector
+description: "Schedule and monitor Cegid ORLI jobs from OpCon: installation, configuration, and operation reference."
 sidebar_label: 'Cegid ORLI Connector'
 hide_table_of_contents: true
 displayed_sidebar: null
+tags:
+  - Conceptual
+  - System Administrator
+  - Automation Engineer
+  - Getting Started
 ---
 
 # Cegid ORLI Connector
 
 The Cegid ORLI Connector integrates OpCon with the Cegid ORLI commercial management application, enabling automated job execution and monitoring from within OpCon.
 
-<div style={{display: 'flex', gap: '0.75rem', alignItems: 'flex-start', flexWrap: 'wrap', marginTop: '1rem'}}>
+## Overview
 
-<div style={{flex: '1', minWidth: '160px', display: 'flex', flexDirection: 'column', gap: '0.6rem'}}>
+- [Overview](./overview.md) — what the connector does and how it processes a job
+- [Release notes](./release-notes.md) — version history and upgrade notes
 
-<div style={{background: 'var(--ifm-card-background-color)', border: '1px solid var(--ifm-color-emphasis-400)', borderRadius: '10px', padding: '0.75rem 1rem'}}>
+## Installation
 
-### Overview
+- [Installation](./installation.md) — install the connector, add the job subtype, and configure `Connector.config`
 
-- [Overview](./overview.md)
-- [Release notes](./release-notes.md)
+## Operation
 
-</div>
-
-</div>
-
-<div style={{flex: '1', minWidth: '160px', display: 'flex', flexDirection: 'column', gap: '0.6rem'}}>
-
-<div style={{background: 'var(--ifm-card-background-color)', border: '1px solid var(--ifm-color-emphasis-400)', borderRadius: '10px', padding: '0.75rem 1rem'}}>
-
-### Installation
-
-- [Installation](./installation.md)
-
-</div>
-
-</div>
-
-<div style={{flex: '1', minWidth: '160px', display: 'flex', flexDirection: 'column', gap: '0.6rem'}}>
-
-<div style={{background: 'var(--ifm-card-background-color)', border: '1px solid var(--ifm-color-emphasis-400)', borderRadius: '10px', padding: '0.75rem 1rem'}}>
-
-### Operation
-
-- [Operation](./operation.md)
-
-</div>
-
-</div>
-
-</div>
+- [Operation](./operation.md) — job definition fields, completion codes, and log output
